@@ -366,7 +366,7 @@ public int maxProfit(int[] prices) {
 
 双指针主要用于遍历数组，两个指针指向不同的元素，从而协同完成任务。
 
-**有序数组的 Tow Sum** 
+**有序数组的 Two Sum** 
 
 [Leetcode ：167. Two Sum II - Input array is sorted (Easy)](https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/description/)
 
@@ -4588,12 +4588,18 @@ For example, given nums = [0, 1, 0, 3, 12], after calling your function, nums sh
 ```java
 public void moveZeroes(int[] nums) {
     int idx = 0;
-    for (int num : nums) if (num != 0) nums[idx++] = num;
-    while (idx < nums.length) nums[idx++] = 0;
+    for (int num : nums) {
+        if (num != 0) {
+            nums[idx++] = num;
+        }
+    }
+    while (idx < nums.length) {
+        nums[idx++] = 0;
+    }
 }
 ```
 
-**调整矩阵** 
+**改变矩阵维度** 
 
 [566. Reshape the Matrix (Easy)](https://leetcode.com/problems/reshape-the-matrix/description/)
 
@@ -4603,8 +4609,10 @@ nums =
 [[1,2],
  [3,4]]
 r = 1, c = 4
+
 Output:
 [[1,2,3,4]]
+
 Explanation:
 The row-traversing of nums is [1,2,3,4]. The new reshaped matrix is a 1 * 4 matrix, fill it row by row by using the previous list.
 ```
@@ -4612,16 +4620,18 @@ The row-traversing of nums is [1,2,3,4]. The new reshaped matrix is a 1 * 4 matr
 ```java
 public int[][] matrixReshape(int[][] nums, int r, int c) {
     int m = nums.length, n = nums[0].length;
-    if (m * n != r * c) return nums;
-    int[][] ret = new int[r][c];
+    if (m * n != r * c) {
+        return nums;
+    }
+    int[][] reshapedNums = new int[r][c];
     int index = 0;
     for (int i = 0; i < r; i++) {
         for (int j = 0; j < c; j++) {
-            ret[i][j] = nums[index / n][index % n];
+            reshapedNums[i][j] = nums[index / n][index % n];
             index++;
         }
     }
-    return ret;
+    return reshapedNums;
 }
 ```
 
@@ -4632,15 +4642,15 @@ public int[][] matrixReshape(int[][] nums, int r, int c) {
 ```java
 public int findMaxConsecutiveOnes(int[] nums) {
     int max = 0, cur = 0;
-    for (int num : nums) {
-        cur = num == 0 ? 0 : cur + 1;
+    for (int x : nums) {
+        cur = x == 0 ? 0 : cur + 1;
         max = Math.max(max, cur);
     }
     return max;
 }
 ```
 
-**一个数组元素在 [1, n] 之间，其中一个数被替换为另一个数，找出丢失的数和重复的数** 
+**一个数组元素在 [1, n] 之间，其中一个数被替换为另一个数，找出重复的数和丢失的数** 
 
 [645. Set Mismatch (Easy)](https://leetcode.com/problems/set-mismatch/description/)
 
@@ -4656,24 +4666,27 @@ Output: [2,3]
 
 最直接的方法是先对数组进行排序，这种方法时间复杂度为 O(NlogN)。本题可以以 O(N) 的时间复杂度、O(1) 空间复杂度来求解。
 
-主要思想是通过交换数组元素，使得数组上的元素在正确的位置上。遍历数组，如果第 i 位上的元素不是 i + 1，那么就交换第 i 位和 nums[i] - 1 位上的元素，使得 num[i] - 1 位置上的元素为 nums[i]，也就是该位置上的元素是正确的。
+主要思想是通过交换数组元素，使得数组上的元素在正确的位置上。遍历数组，如果第 i 位上的元素不是 i + 1，那么一直交换第 i 位和 nums[i] - 1 位置上的元素。
 
 ```java
 public int[] findErrorNums(int[] nums) {
     for (int i = 0; i < nums.length; i++) {
-        while (nums[i] != i + 1) {
-            if (nums[i] == nums[nums[i] - 1]) {
-                return new int[]{nums[nums[i] - 1], i + 1};
-            }
+        while (nums[i] != i + 1 && nums[nums[i] - 1] != nums[i]) {
             swap(nums, i, nums[i] - 1);
         }
     }
-
+    for (int i = 0; i < nums.length; i++) {
+        if (nums[i] != i + 1) {
+            return new int[]{nums[i], i + 1};
+        }
+    }
     return null;
 }
 
 private void swap(int[] nums, int i, int j) {
-    int tmp = nums[i]; nums[i] = nums[j]; nums[j] = tmp;
+    int tmp = nums[i];
+    nums[i] = nums[j];
+    nums[j] = tmp;
 }
 ```
 
@@ -4992,13 +5005,13 @@ public int maxChunksToSorted(int[] arr) {
 
 ```html
 A:          a1 → a2
-                  ↘
-                    c1 → c2 → c3
-                  ↗
+                    ↘
+                      c1 → c2 → c3
+                    ↗
 B:    b1 → b2 → b3
 ```
 
-要求：时间复杂度为 O(N) 空间复杂度为 O(1)
+要求：时间复杂度为 O(N)，空间复杂度为 O(1)
 
 设 A 的长度为 a + c，B 的长度为 b + c，其中 c 为尾部公共部分长度，可知 a + c + b = b + c + a。
 
@@ -5015,7 +5028,7 @@ public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
 }
 ```
 
-如果只是判断是否存在交点，那么就是另一个问题，即 [编程之美：3.6]() 的问题。有两种解法：把第一个链表的结尾连接到第二个链表的开头，看第二个链表是否存在环；或者直接比较第一个链表最后一个节点和第二个链表最后一个节点是否相同。
+如果只是判断是否存在交点，那么就是另一个问题，即 [编程之美：3.6]() 的问题。有两种解法：把第一个链表的结尾连接到第二个链表的开头，看第二个链表是否存在环；或者直接比较两个链表的最后一个节点是否相同。
 
 **链表反转** 
 
@@ -5025,7 +5038,9 @@ public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
 
 ```java
 public ListNode reverseList(ListNode head) {
-    if (head == null || head.next == null) return head;
+    if (head == null || head.next == null) {
+        return head;
+    }
     ListNode next = head.next;
     ListNode newHead = reverseList(next);
     next.next = head;
@@ -5078,9 +5093,9 @@ Given 1->1->2->3->3, return 1->2->3.
 
 ```java
 public ListNode deleteDuplicates(ListNode head) {
-    if (head == null || head.next == null) return head;
+    if(head == null || head.next == null) return head;
     head.next = deleteDuplicates(head.next);
-    return head.next != null && head.val == head.next.val ? head.next : head;
+    return head.val == head.next.val ? head.next : head;
 }
 ```
 
@@ -5095,19 +5110,18 @@ After removing the second node from the end, the linked list becomes 1->2->3->5.
 
 ```java
 public ListNode removeNthFromEnd(ListNode head, int n) {
-    ListNode newHead = new ListNode(-1);
-    newHead.next = head;
-    ListNode fast = newHead;
+    ListNode fast = head;
     while (n-- > 0) {
         fast = fast.next;
     }
-    ListNode slow = newHead;
+    if (fast == null) return head.next;
+    ListNode slow = head;
     while (fast.next != null) {
         fast = fast.next;
         slow = slow.next;
     }
     slow.next = slow.next.next;
-    return newHead.next;
+    return head;
 }
 ```
 
@@ -5119,22 +5133,23 @@ public ListNode removeNthFromEnd(ListNode head, int n) {
 Given 1->2->3->4, you should return the list as 2->1->4->3.
 ```
 
-题目要求：不能修改结点的 val 值；O(1) 空间复杂度。
+题目要求：不能修改结点的 val 值，O(1) 空间复杂度。
 
 ```java
 public ListNode swapPairs(ListNode head) {
-    ListNode newHead = new ListNode(-1);
-    newHead.next = head;
-    ListNode cur = head, pre = newHead;
-    while (cur != null && cur.next != null) {
-        ListNode next = cur.next;
-        pre.next = next;
-        cur.next = next.next;
-        next.next = cur;
-        pre = cur;
-        cur = cur.next;
+    ListNode node = new ListNode(-1);
+    node.next = head;
+    ListNode pre = node;
+    while (pre.next != null && pre.next.next != null) {
+        ListNode l1 = pre.next, l2 = pre.next.next;
+        ListNode next = l2.next;
+        l1.next = next;
+        l2.next = l1;
+        pre.next = l2;
+
+        pre = l1;
     }
-    return newHead.next;
+    return node.next;
 }
 ```
 
@@ -5181,7 +5196,7 @@ private Stack<Integer> buildStack(ListNode l) {
 
 [234. Palindrome Linked List (Easy)](https://leetcode.com/problems/palindrome-linked-list/description/)
 
-要求以 O(1) 的空间复杂度来求解。
+题目要求：以 O(1) 的空间复杂度来求解。
 
 切成两半，把后半段反转，然后比较两半是否相等。
 
@@ -5193,19 +5208,15 @@ public boolean isPalindrome(ListNode head) {
         slow = slow.next;
         fast = fast.next.next;
     }
-
-    if (fast != null) {  // 偶数节点，让 slow 指向下一个节点
-        slow = slow.next;
-    }
-
-    cut(head, slow); // 切成两个链表
-    ListNode l1 = head, l2 = slow;
-    l2 = reverse(l2);
-    return isEqual(l1, l2);
+    if (fast != null) slow = slow.next;  // 偶数节点，让 slow 指向下一个节点
+    cut(head, slow);                     // 切成两个链表
+    return isEqual(head, reverse(slow));
 }
 
 private void cut(ListNode head, ListNode cutNode) {
-    while (head.next != cutNode) head = head.next;
+    while (head.next != cutNode) {
+        head = head.next;
+    }
     head.next = null;
 }
 
@@ -5227,33 +5238,6 @@ private boolean isEqual(ListNode l1, ListNode l2) {
         l2 = l2.next;
     }
     return true;
-}
-```
-
-**链表元素按奇偶聚集** 
-
-[328. Odd Even Linked List (Medium)](https://leetcode.com/problems/odd-even-linked-list/description/)
-
-```html
-Example:
-Given 1->2->3->4->5->NULL,
-return 1->3->5->2->4->NULL.
-```
-
-```java
-public ListNode oddEvenList(ListNode head) {
-    if (head == null) {
-        return head;
-    }
-    ListNode odd = head, even = head.next, evenHead = even;
-    while (even != null && even.next != null) {
-        odd.next = odd.next.next;
-        odd = odd.next;
-        even.next = even.next.next;
-        even = even.next;
-    }
-    odd.next = evenHead;
-    return head;
 }
 ```
 
@@ -5297,6 +5281,33 @@ public ListNode[] splitListToParts(ListNode root, int k) {
 }
 ```
 
+**链表元素按奇偶聚集** 
+
+[328. Odd Even Linked List (Medium)](https://leetcode.com/problems/odd-even-linked-list/description/)
+
+```html
+Example:
+Given 1->2->3->4->5->NULL,
+return 1->3->5->2->4->NULL.
+```
+
+```java
+public ListNode oddEvenList(ListNode head) {
+    if (head == null) {
+        return head;
+    }
+    ListNode odd = head, even = head.next, evenHead = even;
+    while (even != null && even.next != null) {
+        odd.next = odd.next.next;
+        odd = odd.next;
+        even.next = even.next.next;
+        even = even.next;
+    }
+    odd.next = evenHead;
+    return head;
+}
+```
+
 ## 树
 
 ### 递归
@@ -5314,6 +5325,70 @@ public int maxDepth(TreeNode root) {
 }
 ```
 
+**平衡树** 
+
+[110. Balanced Binary Tree (Easy)](https://leetcode.com/problems/balanced-binary-tree/description/)
+
+```html
+    3
+   / \
+  9  20
+    /  \
+   15   7
+```
+
+平衡树左右子树高度差都小于等于 1
+
+```java
+private boolean result = true;
+
+public boolean isBalanced(TreeNode root) {
+    maxDepth(root);
+    return result;
+}
+
+public int maxDepth(TreeNode root) {
+    if (root == null) return 0;
+    int l = maxDepth(root.left);
+    int r = maxDepth(root.right);
+    if (Math.abs(l - r) > 1) result = false;
+    return 1 + Math.max(l, r);
+}
+```
+
+**两节点的最长路径** 
+
+[543. Diameter of Binary Tree (Easy)](https://leetcode.com/problems/diameter-of-binary-tree/description/)
+
+```html
+Input:
+
+         1
+        / \
+       2  3
+      / \
+     4   5
+
+Return 3, which is the length of the path [4,2,1,3] or [5,2,1,3].
+```
+
+```java
+private int max = 0;
+
+public int diameterOfBinaryTree(TreeNode root) {
+    depth(root);
+    return max;
+}
+
+private int depth(TreeNode root) {
+    if (root == null) return 0;
+    int leftDepth = depth(root.left);
+    int rightDepth = depth(root.right);
+    max = Math.max(max, leftDepth + rightDepth);
+    return Math.max(leftDepth, rightDepth) + 1;
+}
+```
+
 **翻转树** 
 
 [226. Invert Binary Tree (Easy)](https://leetcode.com/problems/invert-binary-tree/description/)
@@ -5321,7 +5396,7 @@ public int maxDepth(TreeNode root) {
 ```java
 public TreeNode invertTree(TreeNode root) {
     if (root == null) return null;
-    TreeNode left = root.left; // 后面的操作会改变 left 指针，因此先保存下来
+    TreeNode left = root.left;  // 后面的操作会改变 left 指针，因此先保存下来
     root.left = invertTree(root.right);
     root.right = invertTree(left);
     return root;
@@ -5413,12 +5488,12 @@ Return 3. The paths that sum to 8 are:
 
 ```java
 public int pathSum(TreeNode root, int sum) {
-    if(root == null) return 0;
+    if (root == null) return 0;
     int ret = pathSumStartWithRoot(root, sum) + pathSum(root.left, sum) + pathSum(root.right, sum);
     return ret;
 }
 
-private int pathSumStartWithRoot(TreeNode root, int sum){
+private int pathSumStartWithRoot(TreeNode root, int sum) {
     if (root == null) return 0;
     int ret = 0;
     if (root.val == sum) ret++;
@@ -5438,10 +5513,12 @@ Given tree s:
    4   5
   / \
  1   2
+
 Given tree t:
    4
   / \
  1   2
+
 Return true, because t has the same structure and node values with a subtree of s.
 
 Given tree s:
@@ -5453,10 +5530,12 @@ Given tree s:
  1   2
     /
    0
+
 Given tree t:
    4
   / \
  1   2
+
 Return false.
 ```
 
@@ -5492,42 +5571,11 @@ public boolean isSymmetric(TreeNode root) {
     return isSymmetric(root.left, root.right);
 }
 
-private boolean isSymmetric(TreeNode t1, TreeNode t2){
+private boolean isSymmetric(TreeNode t1, TreeNode t2) {
     if (t1 == null && t2 == null) return true;
     if (t1 == null || t2 == null) return false;
     if (t1.val != t2.val) return false;
     return isSymmetric(t1.left, t2.right) && isSymmetric(t1.right, t2.left);
-}
-```
-
-**平衡树** 
-
-[110. Balanced Binary Tree (Easy)](https://leetcode.com/problems/balanced-binary-tree/description/)
-
-```html
-    3
-   / \
-  9  20
-    /  \
-   15   7
-```
-
-平衡树左右子树高度差都小于等于 1
-
-```java
-private boolean result = true;
-
-public boolean isBalanced(TreeNode root) {
-    maxDepth(root);
-    return result;
-}
-
-public int maxDepth(TreeNode root) {
-    if (root == null) return 0;
-    int l = maxDepth(root.left);
-    int r = maxDepth(root.right);
-    if (Math.abs(l - r) > 1) result = false;
-    return 1 + Math.max(l, r);
 }
 ```
 
@@ -5571,175 +5619,6 @@ public int sumOfLeftLeaves(TreeNode root) {
 private boolean isLeaf(TreeNode node){
     if (node == null) return false;
     return node.left == null && node.right == null;
-}
-```
-
-**修剪二叉查找树** 
-
-[669. Trim a Binary Search Tree (Easy)](https://leetcode.com/problems/trim-a-binary-search-tree/description/)
-
-```html
-Input:
-    3
-   / \
-  0   4
-   \
-    2
-   /
-  1
-
-  L = 1
-  R = 3
-
-Output:
-      3
-     /
-   2
-  /
- 1
-```
-
-二叉查找树（BST）：根节点大于等于左子树所有节点，小于等于右子树所有节点。
-
-只保留值在 L \~ R 之间的节点
-
-```java
-public TreeNode trimBST(TreeNode root, int L, int R) {
-    if (root == null) return null;
-    if (root.val > R) return trimBST(root.left, L, R);
-    if (root.val < L) return trimBST(root.right, L, R);
-    root.left = trimBST(root.left, L, R);
-    root.right = trimBST(root.right, L, R);
-    return root;
-}
-```
-
-**从有序数组中构造二叉查找树** 
-
-[108. Convert Sorted Array to Binary Search Tree (Easy)](https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/description/)
-
-```java
-public TreeNode sortedArrayToBST(int[] nums) {
-    return toBST(nums, 0, nums.length - 1);
-}
-
-private TreeNode toBST(int[] nums, int sIdx, int eIdx){
-    if (sIdx > eIdx) return null;
-    int mIdx = (sIdx + eIdx) / 2;
-    TreeNode root = new TreeNode(nums[mIdx]);
-    root.left =  toBST(nums, sIdx, mIdx - 1);
-    root.right = toBST(nums, mIdx + 1, eIdx);
-    return root;
-}
-```
-
-**两节点的最长路径** 
-
-[543. Diameter of Binary Tree (Easy)](https://leetcode.com/problems/diameter-of-binary-tree/description/)
-
-```html
-Input:
-         1
-        / \
-       2  3
-      / \
-     4   5
-
-Return 3, which is the length of the path [4,2,1,3] or [5,2,1,3].
-```
-
-```java
-private int max = 0;
-
-public int diameterOfBinaryTree(TreeNode root) {
-    depth(root);
-    return max;
-}
-
-private int depth(TreeNode root) {
-    if (root == null) return 0;
-    int leftDepth = depth(root.left);
-    int rightDepth = depth(root.right);
-    max = Math.max(max, leftDepth + rightDepth);
-    return Math.max(leftDepth, rightDepth) + 1;
-}
-```
-
-**找出二叉树中第二小的节点** 
-
-[671. Second Minimum Node In a Binary Tree (Easy)](https://leetcode.com/problems/second-minimum-node-in-a-binary-tree/description/)
-
-```html
-Input:
-   2
-  / \
- 2   5
-    / \
-    5  7
-
-Output: 5
-```
-
-一个节点要么具有 0 个或 2 个子节点，如果有子节点，那么根节点是最小的节点。
-
-```java
-public int findSecondMinimumValue(TreeNode root) {
-    if (root == null) return -1;
-    if (root.left == null && root.right == null) return -1;
-    int leftVal = root.left.val;
-    int rightVal = root.right.val;
-    if (leftVal == root.val) leftVal = findSecondMinimumValue(root.left);
-    if (rightVal == root.val) rightVal = findSecondMinimumValue(root.right);
-    if (leftVal != -1 && rightVal != -1) return Math.min(leftVal, rightVal);
-    if (leftVal != -1) return leftVal;
-    return rightVal;
-}
-```
-
-**二叉查找树的最近公共祖先** 
-
-[235. Lowest Common Ancestor of a Binary Search Tree (Easy)](https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/description/)
-
-```html
-        _______6______
-       /              \
-    ___2__          ___8__
-   /      \        /      \
-   0      _4       7       9
-         /  \
-         3   5
-For example, the lowest common ancestor (LCA) of nodes 2 and 8 is 6. Another example is LCA of nodes 2 and 4 is 2, since a node can be a descendant of itself according to the LCA definition.
-```
-
-```java
-public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-    if (root.val > p.val && root.val > q.val) return lowestCommonAncestor(root.left, p, q);
-    if (root.val < p.val && root.val < q.val) return lowestCommonAncestor(root.right, p, q);
-    return root;
-}
-```
-
-**二叉树的最近公共祖先** 
-
-[236. Lowest Common Ancestor of a Binary Tree (Medium) ](https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/description/)
-
-```html
-       _______3______
-       /              \
-    ___5__          ___1__
-   /      \        /      \
-   6      _2       0       8
-         /  \
-         7   4
-For example, the lowest common ancestor (LCA) of nodes 5 and 1 is 3. Another example is LCA of nodes 5 and 4 is 5, since a node can be a descendant of itself according to the LCA definition.
-```
-
-```java
-public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-    if (root == null || root == p || root == q) return root;
-    TreeNode left = lowestCommonAncestor(root.left, p, q);
-    TreeNode right = lowestCommonAncestor(root.right, p, q);
-    return left == null ? right : right == null ? left : root;
 }
 ```
 
@@ -5793,14 +5672,41 @@ Maximum amount of money the thief can rob = 3 + 3 + 1 = 7.
 public int rob(TreeNode root) {
     if (root == null) return 0;
     int val1 = root.val;
-    if (root.left != null) {
-        val1 += rob(root.left.left) + rob(root.left.right);
-    }
-    if (root.right != null) {
-        val1 += rob(root.right.left) + rob(root.right.right);
-    }
+    if (root.left != null) val1 += rob(root.left.left) + rob(root.left.right);
+    if (root.right != null) val1 += rob(root.right.left) + rob(root.right.right);
     int val2 = rob(root.left) + rob(root.right);
     return Math.max(val1, val2);
+}
+```
+
+**找出二叉树中第二小的节点** 
+
+[671. Second Minimum Node In a Binary Tree (Easy)](https://leetcode.com/problems/second-minimum-node-in-a-binary-tree/description/)
+
+```html
+Input:
+   2
+  / \
+ 2   5
+    / \
+    5  7
+
+Output: 5
+```
+
+一个节点要么具有 0 个或 2 个子节点，如果有子节点，那么根节点是最小的节点。
+
+```java
+public int findSecondMinimumValue(TreeNode root) {
+    if (root == null) return -1;
+    if (root.left == null && root.right == null) return -1;
+    int leftVal = root.left.val;
+    int rightVal = root.right.val;
+    if (leftVal == root.val) leftVal = findSecondMinimumValue(root.left);
+    if (rightVal == root.val) rightVal = findSecondMinimumValue(root.right);
+    if (leftVal != -1 && rightVal != -1) return Math.min(leftVal, rightVal);
+    if (leftVal != -1) return leftVal;
+    return rightVal;
 }
 ```
 
@@ -5982,190 +5888,54 @@ public List<Integer> inorderTraversal(TreeNode root) {
 
 ### BST
 
-主要利用 BST 中序遍历有序的特点。
+二叉查找树（BST）：根节点大于等于左子树所有节点，小于等于右子树所有节点。
 
-**在 BST 中寻找两个节点，使它们的和为一个给定值** 
+二叉查找树中序遍历有序。
 
-[653. Two Sum IV - Input is a BST (Easy)](https://leetcode.com/problems/two-sum-iv-input-is-a-bst/description/)
+**修剪二叉查找树** 
+
+[669. Trim a Binary Search Tree (Easy)](https://leetcode.com/problems/trim-a-binary-search-tree/description/)
 
 ```html
 Input:
-    5
+
+    3
    / \
-  3   6
- / \   \
-2   4   7
+  0   4
+   \
+    2
+   /
+  1
 
-Target = 9
-
-Output: True
-```
-
-使用中序遍历得到有序数组之后，再利用双指针对数组进行查找。
-
-应该注意到，这一题不能用分别在左右子树两部分来处理这种思想，因为两个待求的节点可能分别在左右子树中。
-
-```java
-public boolean findTarget(TreeNode root, int k) {
-    List<Integer> nums = new ArrayList<>();
-    inOrder(root, nums);
-    int i = 0, j = nums.size() - 1;
-    while (i < j){
-        int sum = nums.get(i) + nums.get(j);
-        if (sum == k) return true;
-        if (sum < k) i++;
-        else j--;
-    }
-    return false;
-}
-
-private void inOrder(TreeNode root, List<Integer> nums){
-    if (root == null) return;
-    inOrder(root.left, nums);
-    nums.add(root.val);
-    inOrder(root.right, nums);
-}
-```
-
-**在 BST 中查找两个节点之差的最小绝对值** 
-
-[530. Minimum Absolute Difference in BST (Easy)](https://leetcode.com/problems/minimum-absolute-difference-in-bst/description/)
-
-```html
-Input:
-   1
-    \
-     3
-    /
-   2
+  L = 1
+  R = 3
 
 Output:
-1
+
+      3
+     /
+   2
+  /
+ 1
 ```
 
-利用 BST 的中序遍历为有序的性质，计算中序遍历中临近的两个节点之差的绝对值，取最小值。
+只保留值在 L \~ R 之间的节点
 
 ```java
-private int minDiff = Integer.MAX_VALUE;
-private int preVal = -1;
-
-public int getMinimumDifference(TreeNode root) {
-    inorder(root);
-    return minDiff;
-}
-
-private void inorder(TreeNode node){
-    if (node == null) return;
-    inorder(node.left);
-    if (preVal != -1) minDiff = Math.min(minDiff, Math.abs(node.val - preVal));
-    preVal = node.val;
-    inorder(node.right);
-}
-```
-
-**把 BST 每个节点的值都加上比它大的节点的值** 
-
-[Convert BST to Greater Tree (Easy)](https://leetcode.com/problems/convert-bst-to-greater-tree/description/)
-
-```html
-Input: The root of a Binary Search Tree like this:
-              5
-            /   \
-           2     13
-
-Output: The root of a Greater Tree like this:
-             18
-            /   \
-          20     13
-```
-
-先遍历右子树。
-
-```java
-private int sum = 0;
-
-public TreeNode convertBST(TreeNode root) {
-    traver(root);
+public TreeNode trimBST(TreeNode root, int L, int R) {
+    if (root == null) return null;
+    if (root.val > R) return trimBST(root.left, L, R);
+    if (root.val < L) return trimBST(root.right, L, R);
+    root.left = trimBST(root.left, L, R);
+    root.right = trimBST(root.right, L, R);
     return root;
 }
-
-private void traver(TreeNode root) {
-    if (root == null) return;
-    if (root.right != null) traver(root.right);
-    sum += root.val;
-    root.val = sum;
-    if (root.left != null) traver(root.left);
-}
 ```
 
-**寻找 BST 中出现次数最多的节点** 
-
-[501. Find Mode in Binary Search Tree (Easy)](https://leetcode.com/problems/find-mode-in-binary-search-tree/description/)
-
-```html
-   1
-    \
-     2
-    /
-   2
-return [2].
-```
-
-```java
-private int cnt = 1;
-private int maxCnt = 1;
-private TreeNode preNode = null;
-private List<Integer> list;
-
-public int[] findMode(TreeNode root) {
-    list = new ArrayList<>();
-    inOrder(root);
-    int[] ret = new int[list.size()];
-    int idx = 0;
-    for (int num : list) {
-        ret[idx++] = num;
-    }
-    return ret;
-}
-
-private void inOrder(TreeNode node) {
-    if (node == null) return;
-    inOrder(node.left);
-    if (preNode != null) {
-        if (preNode.val == node.val) cnt++;
-        else cnt = 1;
-    }
-    if (cnt > maxCnt) {
-        maxCnt = cnt;
-        list.clear();
-        list.add(node.val);
-    } else if (cnt == maxCnt) {
-        list.add(node.val);
-    }
-    preNode = node;
-    inOrder(node.right);
-}
-```
-
-**寻找 BST 的第 k 个元素** 
+**寻找二叉查找树的第 k 个元素** 
 
 [230. Kth Smallest Element in a BST (Medium)](https://leetcode.com/problems/kth-smallest-element-in-a-bst/description/)
 
-递归解法：
-
-```java
-public int kthSmallest(TreeNode root, int k) {
-    int leftCnt = count(root.left);
-    if (leftCnt == k - 1) return root.val;
-    if (leftCnt > k - 1) return kthSmallest(root.left, k);
-    return kthSmallest(root.right, k - leftCnt - 1);
-}
-
-private int count(TreeNode node) {
-    if (node == null) return 0;
-    return 1 + count(node.left) + count(node.right);
-}
-```
 
 中序遍历解法：
 
@@ -6190,7 +5960,129 @@ private void inOrder(TreeNode node, int k) {
 }
 ```
 
-**根据有序链表构造平衡的 BST** 
+递归解法：
+
+```java
+public int kthSmallest(TreeNode root, int k) {
+    int leftCnt = count(root.left);
+    if (leftCnt == k - 1) return root.val;
+    if (leftCnt > k - 1) return kthSmallest(root.left, k);
+    return kthSmallest(root.right, k - leftCnt - 1);
+}
+
+private int count(TreeNode node) {
+    if (node == null) return 0;
+    return 1 + count(node.left) + count(node.right);
+}
+```
+
+**把二叉查找树每个节点的值都加上比它大的节点的值** 
+
+[Convert BST to Greater Tree (Easy)](https://leetcode.com/problems/convert-bst-to-greater-tree/description/)
+
+```html
+Input: The root of a Binary Search Tree like this:
+
+              5
+            /   \
+           2     13
+
+Output: The root of a Greater Tree like this:
+
+             18
+            /   \
+          20     13
+```
+
+先遍历右子树。
+
+```java
+private int sum = 0;
+
+public TreeNode convertBST(TreeNode root) {
+    traver(root);
+    return root;
+}
+
+private void traver(TreeNode root) {
+    if (root == null) return;
+    if (root.right != null) traver(root.right);
+    sum += root.val;
+    root.val = sum;
+    if (root.left != null) traver(root.left);
+}
+```
+
+**二叉查找树的最近公共祖先** 
+
+[235. Lowest Common Ancestor of a Binary Search Tree (Easy)](https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/description/)
+
+```html
+        _______6______
+      /                \
+  ___2__             ___8__
+ /      \           /      \
+0        4         7        9
+        /  \
+       3   5
+
+For example, the lowest common ancestor (LCA) of nodes 2 and 8 is 6. Another example is LCA of nodes 2 and 4 is 2, since a node can be a descendant of itself according to the LCA definition.
+```
+
+```java
+public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+    if (root.val > p.val && root.val > q.val) return lowestCommonAncestor(root.left, p, q);
+    if (root.val < p.val && root.val < q.val) return lowestCommonAncestor(root.right, p, q);
+    return root;
+}
+```
+
+**二叉树的最近公共祖先** 
+
+[236. Lowest Common Ancestor of a Binary Tree (Medium) ](https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/description/)
+
+```html
+       _______3______
+      /              \
+  ___5__           ___1__
+ /      \         /      \
+6        2       0        8
+        /  \
+       7    4
+
+For example, the lowest common ancestor (LCA) of nodes 5 and 1 is 3. Another example is LCA of nodes 5 and 4 is 5, since a node can be a descendant of itself according to the LCA definition.
+```
+
+```java
+public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+    if (root == null || root == p || root == q) return root;
+    TreeNode left = lowestCommonAncestor(root.left, p, q);
+    TreeNode right = lowestCommonAncestor(root.right, p, q);
+    return left == null ? right : right == null ? left : root;
+}
+```
+
+**从有序数组中构造二叉查找树** 
+
+[108. Convert Sorted Array to Binary Search Tree (Easy)](https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/description/)
+
+```java
+public TreeNode sortedArrayToBST(int[] nums) {
+    return toBST(nums, 0, nums.length - 1);
+}
+
+private TreeNode toBST(int[] nums, int sIdx, int eIdx){
+    if (sIdx > eIdx) return null;
+    int mIdx = (sIdx + eIdx) / 2;
+    TreeNode root = new TreeNode(nums[mIdx]);
+    root.left =  toBST(nums, sIdx, mIdx - 1);
+    root.right = toBST(nums, mIdx + 1, eIdx);
+    return root;
+}
+```
+
+
+**根据有序链表构造平衡的二叉查找树** 
 
 [109. Convert Sorted List to Binary Search Tree (Medium)](https://leetcode.com/problems/convert-sorted-list-to-binary-search-tree/description/)
 
@@ -6235,6 +6127,138 @@ private int size(ListNode node) {
 }
 ```
 
+**在二叉查找树中寻找两个节点，使它们的和为一个给定值** 
+
+[653. Two Sum IV - Input is a BST (Easy)](https://leetcode.com/problems/two-sum-iv-input-is-a-bst/description/)
+
+```html
+Input:
+
+    5
+   / \
+  3   6
+ / \   \
+2   4   7
+
+Target = 9
+
+Output: True
+```
+
+使用中序遍历得到有序数组之后，再利用双指针对数组进行查找。
+
+应该注意到，这一题不能用分别在左右子树两部分来处理这种思想，因为两个待求的节点可能分别在左右子树中。
+
+```java
+public boolean findTarget(TreeNode root, int k) {
+    List<Integer> nums = new ArrayList<>();
+    inOrder(root, nums);
+    int i = 0, j = nums.size() - 1;
+    while (i < j) {
+        int sum = nums.get(i) + nums.get(j);
+        if (sum == k) return true;
+        if (sum < k) i++;
+        else j--;
+    }
+    return false;
+}
+
+private void inOrder(TreeNode root, List<Integer> nums) {
+    if (root == null) return;
+    inOrder(root.left, nums);
+    nums.add(root.val);
+    inOrder(root.right, nums);
+}
+```
+
+**在二叉查找树中查找两个节点之差的最小绝对值** 
+
+[530. Minimum Absolute Difference in BST (Easy)](https://leetcode.com/problems/minimum-absolute-difference-in-bst/description/)
+
+```html
+Input:
+
+   1
+    \
+     3
+    /
+   2
+
+Output:
+
+1
+```
+
+利用二叉查找树的中序遍历为有序的性质，计算中序遍历中临近的两个节点之差的绝对值，取最小值。
+
+```java
+private int minDiff = Integer.MAX_VALUE;
+private TreeNode preNode = null;
+
+public int getMinimumDifference(TreeNode root) {
+    inOrder(root);
+    return minDiff;
+}
+
+private void inOrder(TreeNode node) {
+    if (node == null) return;
+    inOrder(node.left);
+    if (preNode != null) minDiff = Math.min(minDiff, Math.abs(node.val - preNode.val));
+    preNode = node;
+    inOrder(node.right);
+}
+```
+
+**寻找二叉查找树中出现次数最多的值** 
+
+[501. Find Mode in Binary Search Tree (Easy)](https://leetcode.com/problems/find-mode-in-binary-search-tree/description/)
+
+```html
+   1
+    \
+     2
+    /
+   2
+
+return [2].
+```
+
+答案可能不止一个，也就是有多个值出现的次数一样多，并且是最大的。
+
+```java
+private int curCnt = 1;
+private int maxCnt = 1;
+private TreeNode preNode = null;
+
+public int[] findMode(TreeNode root) {
+    List<Integer> maxCntNums = new ArrayList<>();
+    inOrder(root, maxCntNums);
+    int[] ret = new int[maxCntNums.size()];
+    int idx = 0;
+    for (int num : maxCntNums) {
+        ret[idx++] = num;
+    }
+    return ret;
+}
+
+private void inOrder(TreeNode node, List<Integer> nums) {
+    if (node == null) return;
+    inOrder(node.left, nums);
+    if (preNode != null) {
+        if (preNode.val == node.val) curCnt++;
+        else curCnt = 1;
+    }
+    if (curCnt > maxCnt) {
+        maxCnt = curCnt;
+        nums.clear();
+        nums.add(node.val);
+    } else if (curCnt == maxCnt) {
+        nums.add(node.val);
+    }
+    preNode = node;
+    inOrder(node.right, nums);
+}
+```
 
 ### Trie
 
@@ -6408,22 +6432,24 @@ We cannot find a way to divide the set of nodes into two independent subsets.
 public boolean isBipartite(int[][] graph) {
     int[] colors = new int[graph.length];
     Arrays.fill(colors, -1);
-    for (int i = 0; i < graph.length; i++) {
-        if (colors[i] == -1 && !isBipartite(graph, i, 0, colors))
+    for (int i = 0; i < graph.length; i++) {  // 处理图不是连通的情况
+        if (colors[i] == -1 && !isBipartite(i, 0, colors, graph)) {
             return false;
+        }
     }
     return true;
 }
 
-private boolean isBipartite(int[][] graph, int node, int color, int[] colors) {
-    if (colors[node] != -1)
-        return colors[node] == color;
-
-    colors[node] = color;
-    for (int next : graph[node])
-        if (!isBipartite(graph, next, 1 - color, colors))
+private boolean isBipartite(int curNode, int curColor, int[] colors, int[][] graph) {
+    if (colors[curNode] != -1) {
+        return colors[curNode] == curColor;
+    }
+    colors[curNode] = curColor;
+    for (int nextNode : graph[curNode]) {
+        if (!isBipartite(nextNode, 1 - curColor, colors, graph)) {
             return false;
-
+        }
+    }
     return true;
 }
 ```
@@ -6453,36 +6479,40 @@ return false
 ```java
 public boolean canFinish(int numCourses, int[][] prerequisites) {
     List<Integer>[] graphic = new List[numCourses];
-    for (int i = 0; i < numCourses; i++)
+    for (int i = 0; i < numCourses; i++) {
         graphic[i] = new ArrayList<>();
-    for (int[] pre : prerequisites)
+    }
+    for (int[] pre : prerequisites) {
         graphic[pre[0]].add(pre[1]);
-
+    }
     boolean[] globalMarked = new boolean[numCourses];
     boolean[] localMarked = new boolean[numCourses];
-    for (int i = 0; i < numCourses; i++)
-        if (!dfs(globalMarked, localMarked, graphic, i))
+    for (int i = 0; i < numCourses; i++) {
+        if (hasCycle(globalMarked, localMarked, graphic, i)) {
             return false;
-
+        }
+    }
     return true;
 }
 
-private boolean dfs(boolean[] globalMarked, boolean[] localMarked, List<Integer>[] graphic, int curNode) {
-    if (localMarked[curNode])
-        return false;
-    if (globalMarked[curNode])
-        return true;
+private boolean hasCycle(boolean[] globalMarked, boolean[] localMarked,
+                         List<Integer>[] graphic, int curNode) {
 
+    if (localMarked[curNode]) {
+        return true;
+    }
+    if (globalMarked[curNode]) {
+        return false;
+    }
     globalMarked[curNode] = true;
     localMarked[curNode] = true;
-
-    for (int nextNode : graphic[curNode])
-        if (!dfs(globalMarked, localMarked, graphic, nextNode))
-            return false;
-
+    for (int nextNode : graphic[curNode]) {
+        if (hasCycle(globalMarked, localMarked, graphic, nextNode)) {
+            return true;
+        }
+    }
     localMarked[curNode] = false;
-
-    return true;
+    return false;
 }
 ```
 
@@ -6495,48 +6525,53 @@ private boolean dfs(boolean[] globalMarked, boolean[] localMarked, List<Integer>
 There are a total of 4 courses to take. To take course 3 you should have finished both courses 1 and 2. Both courses 1 and 2 should be taken after you finished course 0. So one correct course order is [0,1,2,3]. Another correct ordering is[0,2,1,3].
 ```
 
-使用 DFS 来实现拓扑排序，使用一个栈存储后序遍历结果，这个栈元素的逆序结果就是拓扑排序结果。
+使用 DFS 来实现拓扑排序，使用一个栈存储后序遍历结果，这个栈的逆序结果就是拓扑排序结果。
 
 证明：对于任何先序关系：v->w，后序遍历结果可以保证 w 先进入栈中，因此栈的逆序结果中 v 会在 w 之前。
 
 ```java
 public int[] findOrder(int numCourses, int[][] prerequisites) {
     List<Integer>[] graphic = new List[numCourses];
-    for (int i = 0; i < numCourses; i++)
+    for (int i = 0; i < numCourses; i++) {
         graphic[i] = new ArrayList<>();
-    for (int[] pre : prerequisites)
+    }
+    for (int[] pre : prerequisites) {
         graphic[pre[0]].add(pre[1]);
-
-    Stack<Integer> topologyOrder = new Stack<>();
+    }
+    Stack<Integer> postOrder = new Stack<>();
     boolean[] globalMarked = new boolean[numCourses];
     boolean[] localMarked = new boolean[numCourses];
-    for (int i = 0; i < numCourses; i++)
-        if (!dfs(globalMarked, localMarked, graphic, i, topologyOrder))
+    for (int i = 0; i < numCourses; i++) {
+        if (hasCycle(globalMarked, localMarked, graphic, i, postOrder)) {
             return new int[0];
-
-    int[] ret = new int[numCourses];
-    for (int i = numCourses - 1; i >= 0; i--)
-        ret[i] = topologyOrder.pop();
-    return ret;
+        }
+    }
+    int[] orders = new int[numCourses];
+    for (int i = numCourses - 1; i >= 0; i--) {
+        orders[i] = postOrder.pop();
+    }
+    return orders;
 }
 
-private boolean dfs(boolean[] globalMarked, boolean[] localMarked, List<Integer>[] graphic, int curNode, Stack<Integer> topologyOrder) {
-    if (localMarked[curNode])
-        return false;
-    if (globalMarked[curNode])
-        return true;
+private boolean hasCycle(boolean[] globalMarked, boolean[] localMarked, List<Integer>[] graphic,
+                         int curNode, Stack<Integer> postOrder) {
 
+    if (localMarked[curNode]) {
+        return true;
+    }
+    if (globalMarked[curNode]) {
+        return false;
+    }
     globalMarked[curNode] = true;
     localMarked[curNode] = true;
-
-    for (int nextNode : graphic[curNode])
-        if (!dfs(globalMarked, localMarked, graphic, nextNode, topologyOrder))
-            return false;
-
+    for (int nextNode : graphic[curNode]) {
+        if (hasCycle(globalMarked, localMarked, graphic, nextNode, postOrder)) {
+            return true;
+        }
+    }
     localMarked[curNode] = false;
-    topologyOrder.push(curNode);
-
-    return true;
+    postOrder.push(curNode);
+    return false;
 }
 ```
 
@@ -6559,15 +6594,13 @@ Explanation: The given undirected graph will be like this:
 
 题目描述：有一系列的边连成的图，找出一条边，移除它之后该图能够成为一棵树。
 
-使用 Union-Find。
-
 ```java
 public int[] findRedundantConnection(int[][] edges) {
     int N = edges.length;
     UF uf = new UF(N);
     for (int[] e : edges) {
         int u = e[0], v = e[1];
-        if (uf.find(u) == uf.find(v)) {
+        if (uf.connect(u, v)) {
             return e;
         }
         uf.union(u, v);
@@ -6576,7 +6609,7 @@ public int[] findRedundantConnection(int[][] edges) {
 }
 
 private class UF {
-    int[] id;
+    private int[] id;
 
     UF(int N) {
         id = new int[N + 1];
@@ -6600,6 +6633,10 @@ private class UF {
 
     int find(int p) {
         return id[p];
+    }
+
+    boolean connect(int u, int v) {
+        return find(u) == find(v);
     }
 }
 ```
